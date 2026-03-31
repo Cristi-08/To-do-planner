@@ -31,8 +31,11 @@ window.onload = function () {
     const savedTheme = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     document.getElementById('theme-toggle').textContent = savedTheme === 'dark' ? '☀️ Light' : '🌙 Dark';
+    fetchQuote();
+    renderTasks();
     updateStats();
 }
+
 // ===== FETCH QUOTE - closes #4 (Mircea) =====
 async function fetchQuote() {
     try {
@@ -77,4 +80,32 @@ function toggleTask(id) {
 function filterTasks() {
     const filter = document.getElementById('filter-category').value;
     renderTasks(filter);
+}
+
+// ===== RENDER TASKS + DELETE - closes #9 (Mircea) =====
+function renderTasks(filter = 'all') {
+    const list = document.getElementById('task-list');
+    list.innerHTML = '';
+    const filtered = tasks.filter(t => filter === 'all' || t.category === filter);
+    filtered.forEach(task => {
+        const li = document.createElement('li');
+        li.className = task - item ${ task.completed ? 'completed' : '' } priority - ${ task.priority };
+        li.innerHTML = `
+            <span>${task.text} <small>[${task.category} / ${task.priority}]</small></span>
+            <div>
+                <button onclick="toggleTask(${task.id})">✅</button>
+                <button onclick="deleteTask(${task.id})">🗑️</button>
+            </div>
+        `;
+        list.appendChild(li);
+    });
+}
+
+function deleteTask(id) {
+    if (confirm('Are you sure you want to delete this task?')) {
+        tasks = tasks.filter(t => t.id !== id);
+        saveTasks();
+        renderTasks();
+        updateStats();
+    }
 }
