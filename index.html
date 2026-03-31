@@ -46,7 +46,21 @@
     <!-- ===== TASK FORM ===== -->
     <!-- Mircea -->
     <section id="task-form-section">
-      <!-- va fi completat -->
+      <h2>➕ Adaugă task</h2>
+      <div class="form-container">
+        <input type="text" id="task-input" placeholder="Scrie un task nou..." />
+        <select id="task-category">
+          <option value="school">🎓 Școală</option>
+          <option value="personal">👤 Personal</option>
+          <option value="project">💼 Proiect</option>
+        </select>
+        <select id="task-priority">
+          <option value="urgent">🔴 Urgent</option>
+          <option value="normal">🟡 Normal</option>
+          <option value="relaxed">🟢 Relaxed</option>
+        </select>
+        <button id="add-task-btn" onclick="addTask()">Adaugă</button>
+      </div>
     </section>
 
     <!-- ===== TASK LIST ===== -->
