@@ -11,7 +11,7 @@ Deschide `index.html` în browser. Nu e nevoie de instalare.
 - HTML — structura paginii
 - CSS — design, animații, teme dark/light
 - JavaScript — logica aplicației
-- ZenQuotes API — citate motivaționale zilnice
+- API — citate motivaționale zilnice
 - localStorage — salvarea taskurilor și preferințelor
 
 ## Funcționalități
