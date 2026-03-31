@@ -33,3 +33,48 @@ window.onload = function () {
     document.getElementById('theme-toggle').textContent = savedTheme === 'dark' ? '☀️ Light' : '🌙 Dark';
     updateStats();
 }
+// ===== FETCH QUOTE - closes #4 (Mircea) =====
+async function fetchQuote() {
+    try {
+        const response = await fetch('https://zenquotes.io/api/random');
+        const data = await response.json();
+        document.getElementById('quote-text').textContent = data[0].q;
+        document.getElementById('quote-author').textContent = '— ' + data[0].a;
+    } catch (error) {
+        document.getElementById('quote-text').textContent = 'Stay focused and keep going!';
+        document.getElementById('quote-author').textContent = '— To-Do Planner';
+    }
+}
+
+// ===== ADD TASK - closes #6 (Mircea) =====
+function addTask() {
+    const input = document.getElementById('task-input');
+    const category = document.getElementById('task-category').value;
+    const priority = document.getElementById('task-priority').value;
+    if (input.value.trim() === '') return;
+    const task = {
+        id: Date.now(),
+        text: input.value.trim(),
+        category,
+        priority,
+        completed: false
+    };
+    tasks.push(task);
+    saveTasks();
+    input.value = '';
+    updateStats();
+}
+
+// ===== MARK TASK AS COMPLETED - closes #8 (Mircea) =====
+function toggleTask(id) {
+    tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
+    saveTasks();
+    renderTasks();
+    updateStats();
+}
+
+// ===== FILTER TASKS - closes #10 (Mircea) =====
+function filterTasks() {
+    const filter = document.getElementById('filter-category').value;
+    renderTasks(filter);
+}
