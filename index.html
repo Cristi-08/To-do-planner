@@ -64,9 +64,16 @@
     </section>
 
     <!-- ===== TASK LIST ===== -->
-    <!-- Mircea -->
+    <!-- Cristi -->
     <section id="task-list-section">
-      <!-- va fi completat -->
+      <h2>📋 Taskurile mele</h2>
+      <select id="filter-category" onchange="filterTasks()">
+        <option value="all">🌐 Toate</option>
+        <option value="school">🎓 Școală</option>
+        <option value="personal">👤 Personal</option>
+        <option value="project">💼 Proiect</option>
+      </select>
+      <ul id="task-list"></ul>
     </section>
 
     <!-- ===== STATISTICS ===== -->
