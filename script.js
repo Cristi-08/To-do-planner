@@ -1,4 +1,4 @@
-// ===== DARK/LIGHT MODE - closes #15 (Cristi) =====
+// ===== DARK/LIGHT MODE =====
 function toggleTheme() {
     const html = document.documentElement;
     const btn = document.getElementById('theme-toggle');
@@ -12,19 +12,25 @@ function toggleTheme() {
     localStorage.setItem('theme', html.getAttribute('data-theme'));
 }
 
-// ===== SAVE TASKS TO LOCALSTORAGE - closes #7 (Cristi) =====
+// ===== SAVE TASKS TO LOCALSTORAGE =====
 let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
 function saveTasks() {
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
 
-// ===== STATISTICS - closes #5 (Cristi) =====
+// ===== STATISTICS =====
 function updateStats() {
-    document.getElementById('total-tasks').textContent = tasks.length;
-    document.getElementById('completed-tasks').textContent = tasks.filter(t => t.completed).length;
-    document.getElementById('pending-tasks').textContent = tasks.filter(t => !t.completed).length;
+    const total = tasks.length;
+    const completed = tasks.filter(t => t.completed).length;
+    document.getElementById('total-tasks').textContent = total;
+    document.getElementById('completed-tasks').textContent = completed;
+    document.getElementById('pending-tasks').textContent = total - completed;
+    const pct = total ? Math.round((completed / total) * 100) : 0;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('progress-label').textContent = pct + '% completate';
 }
+
 
 // ===== INIT =====
 window.onload = function () {
@@ -36,7 +42,7 @@ window.onload = function () {
     updateStats();
 }
 
-// ===== FETCH QUOTE - closes #4 (Mircea) =====
+// ===== FETCH QUOTE =====
 async function fetchQuote() {
     try {
         const response = await fetch('https://zenquotes.io/api/random');
@@ -49,12 +55,13 @@ async function fetchQuote() {
     }
 }
 
-// ===== ADD TASK - closes #6 (Mircea) =====
+// ===== ADD TASK =====
 function addTask() {
     const input = document.getElementById('task-input');
     const category = document.getElementById('task-category').value;
     const priority = document.getElementById('task-priority').value;
     if (input.value.trim() === '') return;
+    renderTasks(document.getElementById('filter-category').value);
     const task = {
         id: Date.now(),
         text: input.value.trim(),
@@ -68,44 +75,61 @@ function addTask() {
     updateStats();
 }
 
-// ===== MARK TASK AS COMPLETED - closes #8 (Mircea) =====
+// ===== MARK TASK AS COMPLETED =====
 function toggleTask(id) {
     tasks = tasks.map(t => t.id === id ? { ...t, completed: !t.completed } : t);
     saveTasks();
-    renderTasks();
+    renderTasks(document.getElementById('filter-category').value);
     updateStats();
 }
 
-// ===== FILTER TASKS - closes #10 (Mircea) =====
+// ===== FILTER TASKS =====
 function filterTasks() {
     const filter = document.getElementById('filter-category').value;
     renderTasks(filter);
 }
 
-// ===== RENDER TASKS + DELETE - closes #9 (Mircea) =====
+// ===== RENDER TASKS =====
 function renderTasks(filter = 'all') {
     const list = document.getElementById('task-list');
-    list.innerHTML = '';
-    const filtered = tasks.filter(t => filter === 'all' || t.category === filter);
-    filtered.forEach(task => {
-        const li = document.createElement('li');
-        li.className = task - item ${ task.completed ? 'completed' : '' } priority - ${ task.priority };
-        li.innerHTML = `
-            <span>${task.text} <small>[${task.category} / ${task.priority}]</small></span>
-            <div>
-                <button onclick="toggleTask(${task.id})">✅</button>
-                <button onclick="deleteTask(${task.id})">🗑️</button>
+    const filtered = filter === 'all' ? tasks : tasks.filter(t => t.category === filter);
+
+    if (filtered.length === 0) {
+        list.innerHTML = '<p class="no-tasks">Nu ai taskuri momentan.</p>';
+        return;
+    }
+
+    const priorityLabels = { urgent: '🔴 Urgent', normal: '🟡 Normal', relaxed: '🟢 Relaxed' };
+    const categoryLabels = { school: '🎓 Școală', personal: '👤 Personal', project: '💼 Proiect' };
+
+    list.innerHTML = filtered.map(t => `
+        <div class="task-item ${t.completed ? 'completed' : ''}" data-priority="${t.priority}" data-id="${t.id}">
+            <div class="task-info">
+                <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask(${t.id})" />
+                <span class="task-text">${t.text}</span>
             </div>
-        `;
-        list.appendChild(li);
+            <div class="task-meta">
+                <span class="task-badge">${categoryLabels[t.category]}</span>
+                <span class="task-badge">${priorityLabels[t.priority]}</span>
+                <button class="delete-btn" onclick="deleteTask(${t.id})">🗑️</button>
+            </div>
+        </div>
+    `).join('');
+
+    requestAnimationFrame(() => {
+        list.querySelectorAll('.task-item').forEach(el => el.classList.add('show'));
     });
 }
 
+
 function deleteTask(id) {
-    if (confirm('Are you sure you want to delete this task?')) {
+    if (!confirm('Ești sigur că vrei să ștergi acest task?')) return;
+    const el = document.querySelector(`.task-item[data-id="${id}"]`);
+    if (el) el.classList.add('removing');
+    setTimeout(() => {
         tasks = tasks.filter(t => t.id !== id);
         saveTasks();
-        renderTasks();
+        renderTasks(document.getElementById('filter-category').value);
         updateStats();
-    }
+    }, 350);
 }
