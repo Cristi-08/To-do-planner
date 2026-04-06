@@ -22,11 +22,6 @@
       <span class="logo-icon">✅</span>
       <span class="logo-text">To-Do Planner</span>
     </div>
-    <nav class="header-nav">
-      <a href="#quote-section">Quote</a>
-      <a href="#task-form-section">Tasks</a>
-      <a href="#stats-section">Stats</a>
-    </nav>
     <button id="theme-toggle" onclick="toggleTheme()">🌙 Dark</button>
   </header>
 
@@ -56,27 +51,40 @@
           <option value="normal">🟡 Normal</option>
           <option value="relaxed">🟢 Relaxed</option>
         </select>
-        <input type="date" id="task-deadline" />
+        <button type="button" id="deadline-toggle" onclick="toggleDeadlinePanel()">📅 <span
+            id="deadline-display">fără</span></button>
+        <div class="deadline-panel" id="deadline-panel">
+          <div class="quick-deadlines">
+            <button type="button" onclick="setQuickDeadline('none')">🚫 Fără</button>
+            <button type="button" onclick="setQuickDeadline('today')">📅 Astăzi</button>
+            <button type="button" onclick="setQuickDeadline('week')">📆 Săptămâna asta</button>
+            <button type="button" onclick="setQuickDeadline('month')">🗓️ Luna asta</button>
+          </div>
+          <input type="date" id="task-deadline" onchange="onDeadlineChange()" />
+        </div>
         <button id="add-task-btn" onclick="addTask()">Adaugă</button>
       </div>
     </section>
 
     <!-- ===== TASK LIST ===== -->
-    <div class="task-list-header">
-      <h2>📋 Lista de taskuri</h2>
-      <select id="filter-category" onchange="filterTasks()">
-        <option value="all">Toate</option>
-        <option value="school">🎓 Școală</option>
-        <option value="personal">👤 Personal</option>
-        <option value="project">💼 Proiect</option>
-      </select>
-      <select id="sort-tasks" onchange="filterTasks()">
-        <option value="created">⏱️ Adăugare</option>
-        <option value="deadline">📅 Deadline</option>
-        <option value="priority">🔥 Prioritate</option>
-      </select>
-    </div>
-
+    <section id="task-list-section">
+      <div class="task-list-header">
+        <h2>📋 Taskurile mele</h2>
+        <select id="filter-category" onchange="filterTasks()">
+          <option value="all">🌐 Toate</option>
+          <option value="school">🎓 Școală</option>
+          <option value="personal">👤 Personal</option>
+          <option value="project">💼 Proiect</option>
+        </select>
+        <select id="sort-tasks" onchange="filterTasks()">
+          <option value="created">⏱️ Adăugare</option>
+          <option value="deadline">📅 Deadline</option>
+          <option value="priority">🔥 Prioritate</option>
+        </select>
+        <button id="clear-completed-btn" onclick="clearCompleted()">🧹 Șterge completate</button>
+      </div>
+      <ul id="task-list"></ul>
+    </section>
 
     <!-- ===== STATISTICS ===== -->
     <section id="stats-section">
