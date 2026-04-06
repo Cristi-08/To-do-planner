@@ -17,7 +17,6 @@
 <body>
 
   <!-- ===== HEADER ===== -->
-  <!-- Cristi -->
   <header id="header">
     <div class="header-logo">
       <span class="logo-icon">✅</span>
@@ -34,7 +33,6 @@
   <main>
 
     <!-- ===== QUOTE SECTION ===== -->
-    <!-- Mircea -->
     <section id="quote-section">
       <div class="quote-container">
         <p id="quote-text">Se încarcă citatul zilei...</p>
@@ -44,7 +42,6 @@
     </section>
 
     <!-- ===== TASK FORM ===== -->
-    <!-- Mircea -->
     <section id="task-form-section">
       <h2>➕ Adaugă task</h2>
       <div class="form-container">
@@ -64,20 +61,21 @@
     </section>
 
     <!-- ===== TASK LIST ===== -->
-    <!-- Cristi -->
     <section id="task-list-section">
-      <h2>📋 Taskurile mele</h2>
-      <select id="filter-category" onchange="filterTasks()">
-        <option value="all">🌐 Toate</option>
-        <option value="school">🎓 Școală</option>
-        <option value="personal">👤 Personal</option>
-        <option value="project">💼 Proiect</option>
-      </select>
-      <ul id="task-list"></ul>
+      <div class="task-list-header">
+        <h2>📋 Lista de taskuri</h2>
+        <select id="filter-category" onchange="filterTasks()">
+          <option value="all">Toate</option>
+          <option value="school">🎓 Școală</option>
+          <option value="personal">👤 Personal</option>
+          <option value="project">💼 Proiect</option>
+        </select>
+      </div>
+      <div id="task-list"></div>
     </section>
 
+
     <!-- ===== STATISTICS ===== -->
-    <!-- Cristi -->
     <section id="stats-section">
       <h2>📊 Statistici săptămânale</h2>
       <div class="stats-container">
@@ -93,6 +91,12 @@
           <span class="stat-number" id="pending-tasks">0</span>
           <span class="stat-label">În așteptare</span>
         </div>
+      </div>
+      <div class="progress-wrapper">
+        <div class="progress-bar">
+          <div id="progress-fill" class="progress-fill"></div>
+        </div>
+        <span id="progress-label">0% completate</span>
       </div>
     </section>
 
