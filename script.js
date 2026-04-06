@@ -60,18 +60,21 @@ function addTask() {
     const input = document.getElementById('task-input');
     const category = document.getElementById('task-category').value;
     const priority = document.getElementById('task-priority').value;
+    const deadline = document.getElementById('task-deadline').value;
     if (input.value.trim() === '') return;
-    renderTasks(document.getElementById('filter-category').value);
     const task = {
         id: Date.now(),
         text: input.value.trim(),
         category,
         priority,
+        deadline,
         completed: false
     };
     tasks.push(task);
     saveTasks();
     input.value = '';
+    document.getElementById('task-deadline').value = '';
+    renderTasks(document.getElementById('filter-category').value);
     updateStats();
 }
 
@@ -92,7 +95,29 @@ function filterTasks() {
 // ===== RENDER TASKS =====
 function renderTasks(filter = 'all') {
     const list = document.getElementById('task-list');
-    const filtered = filter === 'all' ? tasks : tasks.filter(t => t.category === filter);
+    let filtered = filter === 'all' ? [...tasks] : tasks.filter(t => t.category === filter);
+
+    const sortEl = document.getElementById('sort-tasks');
+    const sort = sortEl ? sortEl.value : 'created';
+    const prioRank = { urgent: 0, normal: 1, relaxed: 2 };
+    if (sort === 'deadline') {
+        filtered.sort((a, b) => (a.deadline  '9999-12-31').localeCompare(b.deadline  '9999-12-31'));
+    } else if (sort === 'priority') {
+        filtered.sort((a, b) => prioRank[a.priority] - prioRank[b.priority]);
+    } else {
+        filtered.sort((a, b) => a.id - b.id);
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+    const urgencyLabel = (t) => {
+        if (!t.deadline) return '';
+        if (t.deadline < today) return '🔥 Expirat';
+        const diff = Math.ceil((new Date(t.deadline) - new Date(today)) / 86400000);
+        if (diff === 0) return '🔥 Astăzi';
+        if (diff === 1) return '⏰ Mâine';
+        if (diff <= 3) return ⚡ ${diff} zile;
+        return 🕒 ${diff} zile;
+    };
 
     if (filtered.length === 0) {
         list.innerHTML = '<p class="no-tasks">Nu ai taskuri momentan.</p>';
@@ -101,20 +126,24 @@ function renderTasks(filter = 'all') {
 
     const priorityLabels = { urgent: '🔴 Urgent', normal: '🟡 Normal', relaxed: '🟢 Relaxed' };
     const categoryLabels = { school: '🎓 Școală', personal: '👤 Personal', project: '💼 Proiect' };
-
-    list.innerHTML = filtered.map(t => `
-        <div class="task-item ${t.completed ? 'completed' : ''}" data-priority="${t.priority}" data-id="${t.id}">
+list.innerHTML = filtered.map(t => {
+        const overdue = t.deadline && t.deadline < today && !t.completed;
+        return `
+        <div class="task-item ${t.completed ? 'completed' : ''} ${overdue ? 'overdue' : ''}" data-priority="${t.priority}" data-id="${t.id}">
             <div class="task-info">
                 <input type="checkbox" ${t.completed ? 'checked' : ''} onchange="toggleTask(${t.id})" />
-                <span class="task-text">${t.text}</span>
+                <span class="task-text">${overdue ? '⚠️ ' : ''}${t.text}</span>
             </div>
             <div class="task-meta">
+                ${t.deadline ? <span class="task-badge">📅 ${t.deadline}</span> : ''}
+                ${t.deadline && !t.completed ? <span class="task-badge urgency ${t.deadline < today ? 'u-over' : ''}">${urgencyLabel(t)}</span> : ''}
                 <span class="task-badge">${categoryLabels[t.category]}</span>
                 <span class="task-badge">${priorityLabels[t.priority]}</span>
                 <button class="delete-btn" onclick="deleteTask(${t.id})">🗑️</button>
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 
     requestAnimationFrame(() => {
         list.querySelectorAll('.task-item').forEach(el => el.classList.add('show'));

@@ -352,6 +352,38 @@ section h2 {
     color: var(--text-secondary);
 }
 
+.task-item.overdue {
+    border: 2px solid #ef4444;
+    border-left-width: 4px;
+}
+
+.task-badge.urgency {
+    background: #fef3c7;
+    color: #92400e;
+    font-weight: 600;
+}
+
+.task-badge.urgency.u-over {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+#sort-tasks {
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.task-list-header {
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
 /* ===== FOOTER ===== */
 #footer {
     text-align: center;
