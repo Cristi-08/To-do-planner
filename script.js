@@ -188,10 +188,12 @@ window.onload = function () {
 // ===== FETCH QUOTE =====
 async function fetchQuote() {
     try {
-        const response = await fetch('https://zenquotes.io/api/random');
+        const response = await fetch('https://api.api-ninjas.com/v1/quotes', {
+            headers: { 'X-Api-Key': 'cWVShiG81EBKoTg8zxXli1bKdMileuhfBWKuV4Z6' }
+        });
         const data = await response.json();
-        document.getElementById('quote-text').textContent = data[0].q;
-        document.getElementById('quote-author').textContent = '— ' + data[0].a;
+        document.getElementById('quote-text').textContent = data[0].quote;
+        document.getElementById('quote-author').textContent = '— ' + data[0].author;
     } catch (error) {
         document.getElementById('quote-text').textContent = 'Stay focused and keep going!';
         document.getElementById('quote-author').textContent = '— To-Do Planner';
